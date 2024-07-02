@@ -9,19 +9,16 @@ const sampleProducts = [
   { id: 4, name: "Smartwatch", price: "$299", image: "/images/smartwatch.jpg" },
 ];
 
-const Index = () => {
+const Products = () => {
   const navigate = useNavigate();
 
   return (
     <div className="space-y-8">
       <header className="text-center space-y-4">
-        <h1 className="text-4xl font-bold">Welcome to ElectroMart</h1>
-        <p className="text-lg">Your one-stop shop for the latest electronics</p>
-        <Button onClick={() => navigate("/products")}>Shop Now</Button>
+        <h1 className="text-4xl font-bold">Our Products</h1>
       </header>
 
       <section className="space-y-4">
-        <h2 className="text-2xl font-semibold">Featured Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {sampleProducts.map((product) => (
             <Card key={product.id}>
@@ -43,4 +40,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Products;
