@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,14 +13,24 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { CircleUser, Menu, Package2 } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProducts } from "@/lib/api"; // Assuming you have an API function to fetch products
 import { navItems } from "../App";
 
 const Layout = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["products", searchTerm],
+    queryFn: () => fetchProducts(searchTerm),
+    enabled: !!searchTerm,
+  });
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 justify-between">
-        <DesktopNav />
-        <MobileNav />
+        <DesktopNav searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <MobileNav searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <UserMenu />
       </header>
       <main className="flex-grow p-4 overflow-auto">
@@ -28,7 +40,7 @@ const Layout = () => {
   );
 };
 
-const DesktopNav = () => (
+const DesktopNav = ({ searchTerm, setSearchTerm }) => (
   <nav className="hidden md:flex md:items-center md:gap-5 lg:gap-6 text-lg font-medium md:text-sm">
     <NavItem
       to="/"
@@ -42,10 +54,17 @@ const DesktopNav = () => (
         {item.title}
       </NavItem>
     ))}
+    <Input
+      type="text"
+      placeholder="Search products..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="ml-4"
+    />
   </nav>
 );
 
-const MobileNav = () => (
+const MobileNav = ({ searchTerm, setSearchTerm }) => (
   <Sheet>
     <SheetTrigger asChild>
       <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -67,6 +86,13 @@ const MobileNav = () => (
             {item.title}
           </NavItem>
         ))}
+        <Input
+          type="text"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="mt-4"
+        />
       </nav>
     </SheetContent>
   </Sheet>
